@@ -1,0 +1,42 @@
+pipeline {
+    agent {label 'georgeJavaNode01'}
+    stages {
+        stage ('login ocp') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'msaocp', passwordVariable: 'password', usernameVariable: 'username')]){
+               sh '''
+                    oc login https://api.ocp49.redhat.poc:6443 -u $username -p $password
+                    oc project nanshan
+                '''
+              }
+            }
+        }
+        stage('clone from SCM') {
+            steps {
+                dir("/") {
+                sh 'rm -rf /msa-test'
+                sh 'git clone git@github.com:george-palsys/msa-test.git'
+                }
+            }
+			}
+        stage ('deploy postgresql-persistent') {
+            steps {
+               dir("/msa") {
+               sh '''
+                   ./clean.sh  >/dev/null 2>&1
+                   oc apply -f postgres.ymal
+                '''
+               }
+              }
+            }
+			
+        
+        stage('Create Application') { 
+            steps {
+                 sh '''
+                    oc new-app java:openjdk-11-el7~https://github.com/george-palsys/msa-test.git --labels="app.kubernetes.io/part-of=msa-test-git-app,app=msa-test-git,version=v1" --name=nanshan
+                 '''
+                }
+            }            
+      }
+    }
