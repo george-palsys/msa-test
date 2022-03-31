@@ -1,9 +1,10 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: msa-git-test
+  name: msa-test-git
   labels:
-    app: msa-git-test
+    app: msa-test-git
+    version: v1
 spec:
   ports:
     - name: http-8080
@@ -19,5 +20,4 @@ spec:
       port: 8778
       targetPort: 8778
   selector:
-    app: msa-git-test
-
+    app: msa-test-git
