@@ -19,24 +19,73 @@ pipeline {
                 }
             }
 			}
-        stage ('deploy postgresql-persistent') {
+        
+        stage('Create msa-test-git Application') { 
             steps {
-               dir("/msa") {
+               dir("/msa-test") {
                sh '''
                    ./clean.sh  >/dev/null 2>&1
-                   oc apply -f postgres.ymal
+                   oc new-app java:openjdk-11-el7~https://github.com/george-palsys/msa-test.git --labels="app.kubernetes.io/part-of=msa-test-git-app,app=msa-test-git,version=v1" --name=msa-test-git -n nanshan
                 '''
                }
-              }
-            }
-			
-        
-        stage('Create Application') { 
-            steps {
-                 sh '''
-                    oc new-app java:openjdk-11-el7~https://github.com/george-palsys/msa-test.git --labels="app.kubernetes.io/part-of=msa-test-git-app,app=msa-test-git,version=v1" --name=nanshan
-                 '''
                 }
-            }            
+            }    
+
+        stage('Create product Application') { 
+            steps {
+               dir("/msa-test/product") {
+               sh '''
+                   ./clean.sh  >/dev/null 2>&1
+                   oc new-app java:openjdk-11-el7~https://github.com/george-palsys/msa-test.git --context-dir=product --labels="app.kubernetes.io/part-of=msa-test-git-app,app=product,version=v1" --name=product -n nanshan
+                '''
+               }
+                }
+            } 
+			
+        stage('Create product-v2 Application') { 
+            steps {
+               dir("/msa-test/product") {
+               sh '''
+                   ./clean-v2.sh  >/dev/null 2>&1
+                   oc new-app java:openjdk-11-el7~https://github.com/george-palsys/msa-test.git#v2 --context-dir=product --labels="app.kubernetes.io/part-of=msa-test-git-app,app=product,version=v2" --name=product-v2 -n nanshan                   
+                '''
+               }
+                }
+            }			
+			
+        stage('Create order Application') { 
+            steps {
+               dir("/msa-test/order") {
+               sh '''
+                   ./clean.sh  >/dev/null 2>&1
+                   oc new-app java:openjdk-11-el7~https://github.com/george-palsys/msa-test.git --context-dir=order --labels="app.kubernetes.io/part-of=msa-test-git-app,app=order,version=v1" --name=order -n nanshan
+                '''
+               }
+                }
+            }
+
+        stage('config msa-git-test service') { 
+            steps {
+               dir("/msa-test") {
+               sh '''
+                   oc delete svc msa-test
+                   oc apply -f ./svc.yaml
+                '''
+               }
+                }
+            }
+
+        stage('config product service') { 
+            steps {
+               dir("/msa-test/product") {
+               sh '''
+                   oc delete svc product
+                   oc apply -f ./svc.yaml
+                '''
+               }
+                }
+            }
+
+			
       }
     }
