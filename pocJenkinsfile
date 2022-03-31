@@ -60,7 +60,7 @@ pipeline {
             steps {
                dir("/msa-test") {
                sh '''
-                   oc delete svc msa-test
+                   oc delete svc msa-test-git
                    oc apply -f ./svc.yaml
                 '''
                }
