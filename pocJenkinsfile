@@ -23,10 +23,8 @@ pipeline {
         stage('Create msa-test-git Application') { 
             steps {
                dir("/msa-test") {
-               sh '''
-                   ./clean.sh  >/dev/null 2>&1
-                   oc new-app java:openjdk-11-el7~https://github.com/george-palsys/msa-test.git --labels="app.kubernetes.io/part-of=msa-test-git-app,app=msa-test-git,version=v1" --name=msa-test-git -n nanshan
-                '''
+               sh './clean.sh  >/dev/null 2>&1'
+               sh 'oc new-app java:openjdk-11-el7~https://github.com/george-palsys/msa-test.git --labels="app.kubernetes.io/part-of=msa-test-git-app,app=msa-test-git,version=v1" --name=msa-test-git -n nanshan'
                }
                 }
             }    
@@ -34,10 +32,8 @@ pipeline {
         stage('Create product Application') { 
             steps {
                dir("/msa-test/product") {
-               sh '''
-                   ./clean.sh  >/dev/null 2>&1
-                   oc new-app java:openjdk-11-el7~https://github.com/george-palsys/msa-test.git --context-dir=product --labels="app.kubernetes.io/part-of=msa-test-git-app,app=product,version=v1" --name=product -n nanshan
-                '''
+               sh './clean.sh  >/dev/null 2>&1'
+               sh 'oc new-app java:openjdk-11-el7~https://github.com/george-palsys/msa-test.git --context-dir=product --labels="app.kubernetes.io/part-of=msa-test-git-app,app=product,version=v1" --name=product -n nanshan'
                }
                 }
             } 
@@ -45,10 +41,8 @@ pipeline {
         stage('Create product-v2 Application') { 
             steps {
                dir("/msa-test/product") {
-               sh '''
-                   ./clean-v2.sh  >/dev/null 2>&1
-                   oc new-app java:openjdk-11-el7~https://github.com/george-palsys/msa-test.git#v2 --context-dir=product --labels="app.kubernetes.io/part-of=msa-test-git-app,app=product,version=v2" --name=product-v2 -n nanshan                   
-                '''
+               sh './clean-v2.sh  >/dev/null 2>&1'
+               sh 'oc new-app java:openjdk-11-el7~https://github.com/george-palsys/msa-test.git#v2 --context-dir=product --labels="app.kubernetes.io/part-of=msa-test-git-app,app=product,version=v2" --name=product-v2 -n nanshan'
                }
                 }
             }			
@@ -56,10 +50,8 @@ pipeline {
         stage('Create order Application') { 
             steps {
                dir("/msa-test/order") {
-               sh '''
-                   ./clean.sh  >/dev/null 2>&1
-                   oc new-app java:openjdk-11-el7~https://github.com/george-palsys/msa-test.git --context-dir=order --labels="app.kubernetes.io/part-of=msa-test-git-app,app=order,version=v1" --name=order -n nanshan
-                '''
+               sh './clean.sh  >/dev/null 2>&1'
+               sh 'oc new-app java:openjdk-11-el7~https://github.com/george-palsys/msa-test.git --context-dir=order --labels="app.kubernetes.io/part-of=msa-test-git-app,app=order,version=v1" --name=order -n nanshan'
                }
                 }
             }
