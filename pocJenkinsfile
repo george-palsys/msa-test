@@ -33,7 +33,7 @@ pipeline {
             steps {
                dir("/mprod/msa-test/product") {
                sh './clean.sh  >/dev/null 2>&1'
-               sh 'oc new-app java:openjdk-11-el7~https://github.com/cheyang0323/msa-test-prod.git --context-dir=product --labels="app.kubernetes.io/part-of=msa-test-git-app,app=product,version=v1" --name=product -n nanshan'
+               sh 'oc new-app java:openjdk-11-el7~https://github.com/george-palsys/msa-test-prod.git --labels="app.kubernetes.io/part-of=msa-test-git-app,app=product,version=v1" --name=product -n nanshan'
                }
                 }
             } 						
