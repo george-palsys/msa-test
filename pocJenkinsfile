@@ -36,16 +36,7 @@ pipeline {
                sh 'oc new-app java:openjdk-11-el7~https://github.com/cheyang0323/msa-test-prod.git --context-dir=product --labels="app.kubernetes.io/part-of=msa-test-git-app,app=product,version=v1" --name=product -n nanshan'
                }
                 }
-            } 
-			
-        stage('Create product-v2 Application') { 
-            steps {
-               dir("/mprod/msa-test/product") {
-               sh './clean-v2.sh  >/dev/null 2>&1'
-               sh 'oc new-app java:openjdk-11-el7~https://github.com/george-palsys/msa-test.git#v2 --context-dir=product --labels="app.kubernetes.io/part-of=msa-test-git-app,app=product,version=v2" --name=product-v2 -n nanshan'
-               }
-                }
-            }			
+            } 						
 			
         stage('Create order Application') { 
             steps {
@@ -84,7 +75,6 @@ pipeline {
                    oc patch deploy/msa-test-git -p '{"spec":{"template":{"metadata":{"annotations":{"sidecar.istio.io/inject":"true"}}}}}'
                    oc patch deploy/order -p '{"spec":{"template":{"metadata":{"annotations":{"sidecar.istio.io/inject":"true"}}}}}'
                    oc patch deploy/product -p '{"spec":{"template":{"metadata":{"annotations":{"sidecar.istio.io/inject":"true"}}}}}'
-                   oc patch deploy/product-v2 -p '{"spec":{"template":{"metadata":{"annotations":{"sidecar.istio.io/inject":"true"}}}}}'
                 '''
                 }
             }
